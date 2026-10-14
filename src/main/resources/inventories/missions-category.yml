@@ -1,0 +1,73 @@
+name: '&8%category% Missions &7%page%/%maxPage%'
+size: 36
+
+items:
+  decoration:
+    isPermanent: true
+    slots:
+      - 0-8
+      - 27-35
+    item:
+      material: BLACK_STAINED_GLASS_PANE
+      name: '&f'
+  # Mission icons (locked, completed, not-completed, can-complete) come from the missions configuration
+  # of SuperiorSkyblock2 (modules/missions/), with the same placeholders: {0} = percentage, {1} = progress, {2} = times completed.
+  missions:
+    type: SUPERIORSKYBLOCK_MISSIONS
+    slots:
+      - 9-26
+    # Should missions be sorted by their completion status?
+    # Not completed -> Can complete -> Completed
+    sort-by-completion: false
+    # Should completed missions not be displayed in the menu?
+    remove-completed: false
+    # Sounds played when clicking on a mission, depending on its state.
+    # Remove a section to use the default sound, use 'type: NONE' to disable it.
+    sounds:
+      locked:
+        type: BLOCK_ANVIL_LAND
+        volume: 0.2
+        pitch: 0.2
+      completed:
+        type: BLOCK_ANVIL_LAND
+        volume: 0.2
+        pitch: 0.2
+      not-completed:
+        type: BLOCK_ANVIL_LAND
+        volume: 0.2
+        pitch: 0.2
+      can-complete:
+        type: ENTITY_EXPERIENCE_ORB_PICKUP
+        volume: 0.2
+        pitch: 0.2
+    # Used only when a mission has no icon configured in SuperiorSkyblock2
+    item:
+      material: PAPER
+      name: '&eMission'
+    else:
+      slots:
+        - 13
+      item:
+        material: BARRIER
+        name: '&cNo missions'
+  previous:
+    type: PREVIOUS
+    slot: 27
+    isPermanent: true
+    item:
+      material: PAPER
+      name: '&fPrevious Page'
+  back:
+    type: BACK
+    slot: 31
+    isPermanent: true
+    item:
+      material: BARRIER
+      name: '&fBack'
+  next:
+    type: NEXT
+    slot: 35
+    isPermanent: true
+    item:
+      material: PAPER
+      name: '&fNext Page'

@@ -15,6 +15,7 @@ import com.bgsoftware.superiorskyblock.api.missions.MissionCategory;
 import com.bgsoftware.superiorskyblock.api.schematic.Schematic;
 import com.bgsoftware.superiorskyblock.api.world.Dimension;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
+import com.bgsoftware.superiorskyblock.core.threads.BukkitExecutor;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import fr.maxlego08.menu.api.Inventory;
@@ -301,7 +302,6 @@ public class ZMenusProvider implements MenusProvider {
     public void openMissions(SuperiorPlayer targetPlayer, ISuperiorMenu previousMenu) {
         Preconditions.checkNotNull(targetPlayer, "targetPlayer parameter cannot be null.");
         this.zMenuManager.openInventory(targetPlayer, "missions");
-
     }
 
     @Override
@@ -314,7 +314,10 @@ public class ZMenusProvider implements MenusProvider {
 
     @Override
     public void refreshMissionsCategory(MissionCategory missionCategory) {
-        // TODO
+        Preconditions.checkNotNull(missionCategory, "missionCategory parameter cannot be null.");
+        // SSB appelle cette méthode depuis un thread async lors de la complétion d'une mission
+        BukkitExecutor.ensureMain(() -> refreshInventories(MenuType.MISSIONS_CATEGORY, cache -> cache.getMissionCategory() != null
+                && cache.getMissionCategory().getName().equalsIgnoreCase(missionCategory.getName())));
     }
 
     @Override

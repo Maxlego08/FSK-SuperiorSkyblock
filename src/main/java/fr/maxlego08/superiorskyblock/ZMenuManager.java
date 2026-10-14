@@ -57,6 +57,8 @@ import fr.maxlego08.superiorskyblock.loader.IslandPermissionLoader;
 import fr.maxlego08.superiorskyblock.loader.IslandSettingsLoader;
 import fr.maxlego08.superiorskyblock.loader.IslandTopLoader;
 import fr.maxlego08.superiorskyblock.loader.IslandTopSortLoader;
+import fr.maxlego08.superiorskyblock.loader.MissionCategoryLoader;
+import fr.maxlego08.superiorskyblock.loader.MissionsLoader;
 import fr.maxlego08.superiorskyblock.loader.PlayerLanguageLoader;
 import fr.maxlego08.superiorskyblock.loader.RateLoader;
 import fr.maxlego08.superiorskyblock.loader.UpgradeLoader;
@@ -195,6 +197,8 @@ public class ZMenuManager implements Listener {
         this.buttonManager.register(new UpgradeLoader(this.plugin));
         this.buttonManager.register(new WarpsLoader(this.plugin));
         this.buttonManager.register(new WarpPrivacyLoader(this.plugin));
+        this.buttonManager.register(new MissionCategoryLoader(this.plugin));
+        this.buttonManager.register(new MissionsLoader(this.plugin));
 
         this.buttonManager.register(new NoneLoader(this.plugin, IslandMembersButton.class, "SUPERIORSKYBLOCK_MEMBERS"));
         this.buttonManager.register(new NoneLoader(this.plugin, IslandMemberInfoButton.class, "SUPERIORSKYBLOCK_MEMBER_INFO"));
@@ -252,7 +256,8 @@ public class ZMenuManager implements Listener {
                 "permissions", "control-panel", "top-islands", "border-color", "confirm-ban", "confirm-disband", "confirm-kick", "confirm-transfer", //
                 "confirm-leave", "warps", "player-language", "values", "bank-logs", "banned-players", "coops", "counts", "visitors", //
                 "upgrades", "warp-manage", "warp-icon-edit", "global-warps", "island-bank", "island-ratings", "island-rate", //
-                "island-chests", "unique-visitors", "warp-categories", "warp-category-manage", "warp-category-icon-edit");
+                "island-chests", "unique-visitors", "warp-categories", "warp-category-manage", "warp-category-icon-edit", //
+                "missions", "missions-category");
 
         inventories.forEach(inventoryName -> {
             if (!new File(this.plugin.getDataFolder(), "inventories/" + inventoryName + ".yml").exists()) {
