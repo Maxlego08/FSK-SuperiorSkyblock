@@ -261,10 +261,12 @@ public class ZMenuManager implements Listener {
         });
 
         this.inventoryManager.deleteInventories(this.plugin);
+        this.inventories.clear();
 
         this.files(folder, file -> {
             try {
                 Inventory inventory = this.inventoryManager.loadInventory(this.plugin, file);
+                if (inventory == null) return; // Inventaire désactivé (enable: false) ou en attente d'une condition de chargement
                 MenuType menuType = MenuType
                         .valueOf(inventory.getFileName().toUpperCase(Locale.ENGLISH).replace("-", "_"));
                 ZMenuManager.this.inventories.put(menuType, inventory);

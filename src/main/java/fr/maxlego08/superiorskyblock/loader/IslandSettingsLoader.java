@@ -29,7 +29,9 @@ public class IslandSettingsLoader extends SuperiorButtonLoader {
         Optional.ofNullable(configuration.getConfigurationSection(path + "settings")).ifPresent(settingsSection -> {
             for (String islandFlagName : settingsSection.getKeys(false)) {
                 Optional.ofNullable(settingsSection.getConfigurationSection(islandFlagName)).ifPresent(islandFlagSection -> {
-                    settings.add(loadIslandFlagInfo(islandFlagName, settings.size(), configuration, path + "settings." + islandFlagName + ".", menuManager.getInventoryManager()));
+                    if (islandFlagSection.getBoolean("display-menu", true)) {
+                        settings.add(loadIslandFlagInfo(islandFlagName, settings.size(), configuration, path + "settings." + islandFlagName + ".", menuManager.getInventoryManager()));
+                    }
                 });
             }
         });

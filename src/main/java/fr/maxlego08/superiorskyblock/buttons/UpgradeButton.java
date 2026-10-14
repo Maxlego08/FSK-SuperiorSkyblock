@@ -4,7 +4,7 @@ import com.bgsoftware.superiorskyblock.SuperiorSkyblockPlugin;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.upgrades.Upgrade;
 import com.bgsoftware.superiorskyblock.api.upgrades.UpgradeLevel;
-import com.bgsoftware.superiorskyblock.api.upgrades.cost.UpgradeCost;
+import com.bgsoftware.superiorskyblock.island.IslandUtils;
 import fr.maxlego08.menu.api.MenuItemStack;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
@@ -46,7 +46,7 @@ public class UpgradeButton extends SuperiorButton {
 
     @Override
     public ItemStack getCustomItemStack(Player player, boolean useCache, Placeholders placeholders) {
-        UpgradeCost levelCost = this.upgradeLevel.getCost();
-        return levelCost.hasEnoughBalance(getSuperiorPlayer(player)) ? super.getCustomItemStack(player, useCache, placeholders) : this.errorItemStack.build(player, false, placeholders);
+        // Plusieurs couts possibles depuis SSB 2026.3
+        return IslandUtils.hasEnoughBalance(this.upgradeLevel.getCosts(), getSuperiorPlayer(player)) ? super.getCustomItemStack(player, useCache, placeholders) : this.errorItemStack.build(player, false, placeholders);
     }
 }

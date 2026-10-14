@@ -24,7 +24,7 @@ public final class ZMenuModule extends PluginModule {
 
     @Override
     public void onReload(SuperiorSkyblock superiorSkyblock) {
-        menusProvider.getMenuManager().loadInventories();
+        menusProvider.loadInventories();
     }
 
     @Override

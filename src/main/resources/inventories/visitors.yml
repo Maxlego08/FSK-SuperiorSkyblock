@@ -1,4 +1,4 @@
-name: '&8Island Visitors'
+name: '&8Island Visitors (%visitor%)'
 
 items:
   decoration:
@@ -45,4 +45,4 @@ items:
       material: PLAYER_HEAD
       name: '&e%player%'
       lore:
-        - '&7Island Owner: %island-owner%'
+        - '&7Island Owner: %island-owner%'

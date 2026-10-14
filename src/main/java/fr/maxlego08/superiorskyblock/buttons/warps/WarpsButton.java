@@ -4,6 +4,8 @@ import com.bgsoftware.superiorskyblock.SuperiorSkyblockPlugin;
 import com.bgsoftware.superiorskyblock.api.island.warps.IslandWarp;
 import com.bgsoftware.superiorskyblock.api.island.warps.WarpCategory;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
+import com.bgsoftware.superiorskyblock.core.LazyWorldLocation;
+import com.bgsoftware.superiorskyblock.core.ObjectsPools;
 import com.bgsoftware.superiorskyblock.core.SequentialListBuilder;
 import com.bgsoftware.superiorskyblock.core.formatting.Formatters;
 import com.bgsoftware.superiorskyblock.core.menu.MenuActions;
@@ -53,7 +55,7 @@ public class WarpsButton extends SuperiorPaginateButton {
 
         WarpCategory warpCategory = getCache(player).getWarpCategory();
         SuperiorPlayer superiorPlayer = getSuperiorPlayer(player);
-        boolean hasPermissionEdit = warpCategory.getIsland().hasPermission(superiorPlayer, IslandPrivileges.SET_WARP);
+        boolean hasPermissionEdit = warpCategory.getIsland().isMember(superiorPlayer) && warpCategory.getIsland().hasPermission(superiorPlayer, IslandPrivileges.SET_WARP);
 
         for (int i = 0; i != Math.min(islandWarps.size(), this.slots.size()); i++) {
             int slot = slots.get(i);
@@ -62,7 +64,10 @@ public class WarpsButton extends SuperiorPaginateButton {
             Placeholders placeholders = new Placeholders();
             placeholders.register("material", islandWarp.getRawIcon() == null ? "BOOK" : islandWarp.getRawIcon().getType().name());
             placeholders.register("name", islandWarp.getName());
-            placeholders.register("location", Formatters.LOCATION_FORMATTER.format(islandWarp.getLocation()));
+            // LazyWorldLocation : ne necessite pas que le monde soit charge
+            try (ObjectsPools.Wrapper<LazyWorldLocation> wrapper = ObjectsPools.LAZY_LOCATION.obtain()) {
+                placeholders.register("location", Formatters.LOCATION_FORMATTER.format(islandWarp.getLocation(wrapper.getHandle())));
+            }
             placeholders.register("status", islandWarp.hasPrivateFlag() ? ensureNotNull(Message.ISLAND_WARP_PRIVATE.getMessage(superiorPlayer.getUserLocale())) : ensureNotNull(Message.ISLAND_WARP_PUBLIC.getMessage(superiorPlayer.getUserLocale())));
 
             ItemButton itemButton = inventory.addItem(slot, (hasPermissionEdit ? this.editItemStack : getItemStack()).build(player, false, placeholders));

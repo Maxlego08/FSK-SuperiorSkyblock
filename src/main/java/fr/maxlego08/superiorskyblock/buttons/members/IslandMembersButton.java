@@ -1,6 +1,7 @@
 package fr.maxlego08.superiorskyblock.buttons.members;
 
 import com.bgsoftware.superiorskyblock.SuperiorSkyblockPlugin;
+import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import com.bgsoftware.superiorskyblock.core.itemstack.ItemSkulls;
 import fr.maxlego08.menu.api.utils.Placeholders;
@@ -23,6 +24,16 @@ public class IslandMembersButton extends SuperiorPaginateButton {
     }
 
     @Override
+    public void onInventoryOpen(Player player, InventoryEngine inventory, Placeholders placeholders) {
+        super.onInventoryOpen(player, inventory, placeholders);
+        Island island = getIsland(player);
+        if (island != null) {
+            placeholders.register("members", String.valueOf(island.getIslandMembers(true).size()));
+            placeholders.register("max-members", String.valueOf(island.getTeamLimit()));
+        }
+    }
+
+    @Override
     public boolean hasSpecialRender() {
         return true;
     }
@@ -30,7 +41,10 @@ public class IslandMembersButton extends SuperiorPaginateButton {
     @Override
     public void onRender(Player player, InventoryEngine inventory) {
         SuperiorPlayer superiorPlayer = getSuperiorPlayer(player);
-        List<SuperiorPlayer> members = new ArrayList<>(superiorPlayer.getIsland().getIslandMembers(true));
+        Island island = getIsland(player);
+        if (island == null) return;
+
+        List<SuperiorPlayer> members = new ArrayList<>(island.getIslandMembers(true));
         members.sort(Comparator.comparingInt((ToIntFunction<SuperiorPlayer>) value -> value.getPlayerRole().getWeight()).reversed());
 
         Pagination<SuperiorPlayer> pagination = new Pagination<>();
@@ -53,7 +67,13 @@ public class IslandMembersButton extends SuperiorPaginateButton {
 
     @Override
     public int getPaginationSize(Player player) {
-        SuperiorPlayer superiorPlayer = getSuperiorPlayer(player);
-        return superiorPlayer.getIsland().getIslandMembers(true).size();
+        Island island = getIsland(player);
+        return island == null ? 0 : island.getIslandMembers(true).size();
+    }
+
+    // Utilise l'ile stockee dans le cache (openMembers), sinon celle du joueur
+    private Island getIsland(Player player) {
+        Island island = getCache(player).getIsland();
+        return island != null ? island : getSuperiorPlayer(player).getIsland();
     }
 }

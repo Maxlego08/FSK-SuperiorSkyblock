@@ -70,10 +70,11 @@ public class IslandPermissionButton extends SuperiorPaginateButton {
 
             List<String> strings = new ArrayList<>(menuItemStack.getLore().stream().map(placeholders::parse).collect(Collectors.toList()));
             int roleWeight = requiredRole == null ? Integer.MAX_VALUE : requiredRole.getWeight();
+            IslandPrivilege.Type type = permission.getIslandPrivilege() == null ? null : permission.getIslandPrivilege().getType();
 
             PlayerRole currentRole;
             for (int j = -2; (currentRole = SPlayerRole.of(j)) != null; j++) {
-                if (!plugin.getSettings().isCoopMembers() && currentRole == SPlayerRole.coopRole()) continue;
+                if (!isRoleAllowed(currentRole, type)) continue;
 
                 if (j < roleWeight) {
                     strings.add(this.noRolePermission.replace("%role%", String.valueOf(currentRole)));
@@ -107,34 +108,37 @@ public class IslandPermissionButton extends SuperiorPaginateButton {
 
         if (clickedPlayer.getPlayerRole().isLessThan(currentRole)) return;
 
+        IslandPrivilege.Type type = islandPrivilege.getType();
         PlayerRole newRole = null;
 
         if (clickEvent.getClick().isLeftClick()) {
-            newRole = SPlayerRole.of(currentRole.getWeight() - 1);
-
-            if (!plugin.getSettings().isCoopMembers() && newRole == SPlayerRole.coopRole()) {
-                assert newRole != null;
+            newRole = currentRole;
+            do {
                 newRole = SPlayerRole.of(newRole.getWeight() - 1);
-            }
+            } while (newRole != null && !isRoleAllowed(newRole, type));
 
             if (newRole == null) newRole = clickedPlayer.getPlayerRole();
         } else {
             if (clickedPlayer.getPlayerRole().isHigherThan(currentRole)) {
-                newRole = SPlayerRole.of(currentRole.getWeight() + 1);
+                newRole = currentRole;
+                do {
+                    newRole = SPlayerRole.of(newRole.getWeight() + 1);
+                } while (newRole != null && !isRoleAllowed(newRole, type));
             }
 
-            if (!plugin.getSettings().isCoopMembers() && newRole == SPlayerRole.coopRole()) {
-                assert newRole != null;
-                newRole = SPlayerRole.of(newRole.getWeight() + 1);
-            }
-
-            if (newRole == null) newRole = SPlayerRole.guestRole();
+            if (newRole == null) newRole = type == IslandPrivilege.Type.COMMAND ? SPlayerRole.defaultRole() : SPlayerRole.guestRole();
         }
 
         if (PluginEventsFactory.callIslandChangeRolePrivilegeEvent(island, clickedPlayer, newRole)) {
             island.setPermission(newRole, islandPrivilege);
             onRender(clickedPlayer.asPlayer(), inventoryDefault);
         }
+    }
+
+    // Les privileges COMMAND ne peuvent etre donnes qu'aux membres de l'ile (SSB 2026.3)
+    private boolean isRoleAllowed(PlayerRole role, IslandPrivilege.Type type) {
+        if (!plugin.getSettings().isCoopMembers() && role == SPlayerRole.coopRole()) return false;
+        return !(type == IslandPrivilege.Type.COMMAND && role != null && role.isLessThan(SPlayerRole.defaultRole()));
     }
 
     @Override

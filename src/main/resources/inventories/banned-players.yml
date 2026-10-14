@@ -1,4 +1,4 @@
-name: '&8Island Banned Players'
+name: '&8Island Banned Players (%banned%)'
 
 items:
   players:
@@ -36,4 +36,4 @@ items:
       - 36-53
     item:
       material: CYAN_STAINED_GLASS_PANE
-      name: '&f'
+      name: '&f'

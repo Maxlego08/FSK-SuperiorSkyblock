@@ -62,6 +62,8 @@ public class IslandBiomeButton extends SuperiorButton {
             return itemStack;
 
         if (shouldCurrentBiomeGlow) {
+            // Clone : zMenu retourne son ItemStack en cache, il ne doit pas etre modifie
+            itemStack = itemStack.clone();
             ItemMeta itemMeta = itemStack.getItemMeta();
             plugin.getNMSAlgorithms().makeItemGlow(itemMeta);
             itemStack.setItemMeta(itemMeta);

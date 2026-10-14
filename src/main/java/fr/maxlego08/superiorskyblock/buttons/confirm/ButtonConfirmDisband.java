@@ -7,6 +7,7 @@ import com.bgsoftware.superiorskyblock.core.events.plugin.PluginEventsFactory;
 import com.bgsoftware.superiorskyblock.core.formatting.Formatters;
 import com.bgsoftware.superiorskyblock.core.messages.Message;
 import com.bgsoftware.superiorskyblock.island.IslandUtils;
+import com.bgsoftware.superiorskyblock.island.privilege.IslandPrivileges;
 import com.bgsoftware.superiorskyblock.module.BuiltinModules;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
@@ -28,9 +29,23 @@ public class ButtonConfirmDisband extends SuperiorButton {
     public void onClick(Player player, InventoryClickEvent event, InventoryEngine inventory, int slot, Placeholders placeholders) {
         super.onClick(player, event, inventory, slot, placeholders);
         SuperiorPlayer superiorPlayer = getSuperiorPlayer(player);
-        Island island = getCache(player).getIsland();
-        if (island == null) island = superiorPlayer.getIsland();
+        // On agit uniquement sur l'île du joueur, le cache peut contenir une île d'un autre menu
+        Island island = superiorPlayer.getIsland();
         if (island == null) return;
+
+        Island cachedIsland = getCache(player).getIsland();
+        if (cachedIsland != null && !cachedIsland.equals(island)) return;
+
+        // Mêmes vérifications que CmdDisband, le menu peut être ouvert sans passer par la commande
+        if (!island.hasPermission(superiorPlayer, IslandPrivileges.DISBAND_ISLAND)) {
+            Message.NO_DISBAND_PERMISSION.send(superiorPlayer);
+            return;
+        }
+
+        if (!superiorPlayer.hasDisbands() && plugin.getSettings().getDisbandCount() >= 0) {
+            Message.NO_MORE_DISBANDS.send(superiorPlayer);
+            return;
+        }
 
         if (PluginEventsFactory.callIslandDisbandEvent(island, superiorPlayer)) {
             IslandUtils.sendMessage(island, Message.DISBAND_ANNOUNCEMENT, Collections.emptyList(), superiorPlayer.getName());

@@ -1,4 +1,4 @@
-name: 'Island Visitors (%visitor%)'
+name: 'Island Unique Visitors (%visitor%)'
 
 items:
   decoration:
@@ -37,4 +37,4 @@ items:
     isPermanent: true
     item:
       material: PAPER
-      name: '&fPrevious Page'
+      name: '&fPrevious Page'

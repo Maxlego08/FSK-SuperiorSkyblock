@@ -25,12 +25,16 @@ public class ButtonConfirmTransfer extends SuperiorButton {
         SuperiorPlayer superiorPlayer = getSuperiorPlayer(player);
 
         PlayerCache cache = getCache(player);
-        Island island = cache.getIsland() != null ? cache.getIsland() : superiorPlayer.getIsland();
+        // Only the player's own island, the cache may hold an island from another menu
+        Island island = superiorPlayer.getIsland();
         SuperiorPlayer newOwner = cache.getTargetPlayer();
+        if (island == null || newOwner == null) return;
+        if (cache.getIsland() != null && !cache.getIsland().equals(island)) return;
+
+        // Re-check like CmdTransfer, the menu can be opened without the command
+        if (!IslandUtils.checkTransferRestrictions(superiorPlayer, island, newOwner)) return;
 
         // Same behavior as SSB's confirm-transfer menu: event, transfer and broadcast are handled by IslandUtils
-        if (island != null && newOwner != null) {
-            IslandUtils.handleTransferIsland(superiorPlayer, island, newOwner);
-        }
+        IslandUtils.handleTransferIsland(superiorPlayer, island, newOwner);
     }
 }

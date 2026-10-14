@@ -49,6 +49,15 @@ public class ZMenusProvider implements MenusProvider {
     public void initializeMenus() {
         this.originalMenusProvider.initializeMenus();
         this.zMenuManager.registerButtons();
+        loadInventories();
+    }
+
+    /**
+     * Recharge les inventaires zMenu et vide le cache des configurations de création d'île,
+     * sinon les anciens IslandCreationButton resteraient utilisés après un reload.
+     */
+    public void loadInventories() {
+        this.ISLAND_CREATION_CONFIG_CACHE.clear();
         this.zMenuManager.loadInventories();
     }
 
@@ -209,10 +218,13 @@ public class ZMenusProvider implements MenusProvider {
 
     @Override
     public MenuIslandCreationConfig getIslandCreationConfig(Schematic schematic) {
+        Inventory creationMenu = this.zMenuManager.getInventory(MenuType.ISLAND_CREATION);
+        // Inventaire non chargé (désactivé ou en cours de reload) : on ne met pas la config par défaut en cache
+        if (creationMenu == null) return new ZMenuConfig.IslandCreation(schematic, null);
+
         return ISLAND_CREATION_CONFIG_CACHE.computeIfAbsent(schematic, unused -> {
-            Inventory creationMenu = this.zMenuManager.getInventory(MenuType.ISLAND_CREATION);
             for (Button button : creationMenu.getButtons()) {
-                if (button instanceof IslandCreationButton) {
+                if (button instanceof IslandCreationButton && schematic.equals(((IslandCreationButton) button).getSchematic())) {
                     return new ZMenuConfig.IslandCreation((IslandCreationButton) button);
                 }
             }
@@ -382,7 +394,7 @@ public class ZMenusProvider implements MenusProvider {
     public void openTopIslands(SuperiorPlayer targetPlayer, ISuperiorMenu previousMenu, SortingType sortingType) {
         Preconditions.checkNotNull(targetPlayer, "targetPlayer parameter cannot be null.");
         Preconditions.checkNotNull(sortingType, "sortingType parameter cannot be null.");
-        this.zMenuManager.openInventory(targetPlayer, "top-islands");
+        this.zMenuManager.openInventory(targetPlayer, "top-islands", cache -> cache.setSortingType(sortingType));
     }
 
     @Override

@@ -1,10 +1,11 @@
 package fr.maxlego08.superiorskyblock.buttons.warps;
 
 import com.bgsoftware.superiorskyblock.SuperiorSkyblockPlugin;
+import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.island.warps.WarpCategory;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import com.bgsoftware.superiorskyblock.core.SequentialListBuilder;
-import com.bgsoftware.superiorskyblock.core.menu.MenuActions;
+import com.bgsoftware.superiorskyblock.island.privilege.IslandPrivileges;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.api.engine.ItemButton;
 import fr.maxlego08.menu.api.engine.Pagination;
@@ -43,6 +44,8 @@ public class WarpCategoriesButton extends SuperiorPaginateButton {
         List<WarpCategory> categories = pagination.paginate(requestObjects(player), this.slots.size(),
                 inventory.getPage());
         SuperiorPlayer superiorPlayer = getSuperiorPlayer(player);
+        Island island = getCache(player).getIsland();
+        boolean canManage = island.isMember(superiorPlayer) && island.hasPermission(superiorPlayer, IslandPrivileges.SET_WARP);
 
         for (int i = 0; i != categories.size(); i++) {
             int slot = slots.get(i);
@@ -62,14 +65,21 @@ public class WarpCategoriesButton extends SuperiorPaginateButton {
 
             ItemButton button = inventory.addItem(slot, getItemStack().build(player, false, placeholders));
 
-            button.setLeftClick(event -> {
-                this.menuManager.openInventory(player, "warps", cache -> cache.setWarpCategory(category));
-            });
+            // Gestion reservee aux membres ayant la permission SET_WARP
+            if (canManage) {
+                button.setLeftClick(event -> {
+                    this.menuManager.openInventory(player, "warps", cache -> cache.setWarpCategory(category));
+                });
 
-            button.setRightClick(event -> {
-                this.menuManager.openInventory(player, "warp-category-manage",
-                        cache -> cache.setWarpCategory(category));
-            });
+                button.setRightClick(event -> {
+                    this.menuManager.openInventory(player, "warp-category-manage",
+                            cache -> cache.setWarpCategory(category));
+                });
+            } else {
+                button.setClick(event -> {
+                    this.menuManager.openInventory(player, "warps", cache -> cache.setWarpCategory(category));
+                });
+            }
         }
     }
 
@@ -80,6 +90,9 @@ public class WarpCategoriesButton extends SuperiorPaginateButton {
 
     protected List<WarpCategory> requestObjects(Player player) {
         PlayerCache cache = getCache(player);
-        return new SequentialListBuilder<WarpCategory>().build(cache.getIsland().getWarpCategories().values());
+        Island island = cache.getIsland();
+        boolean isMember = island.isMember(getSuperiorPlayer(player));
+        // Cache les categories dont tous les warps sont prives pour les non-membres
+        return new SequentialListBuilder<WarpCategory>().filter(category -> category.getWarps().stream().anyMatch(islandWarp -> isMember || !islandWarp.hasPrivateFlag())).build(island.getWarpCategories().values());
     }
 }
