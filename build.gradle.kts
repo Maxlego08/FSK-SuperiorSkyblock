@@ -3,7 +3,7 @@ plugins {
     id("com.gradleup.shadow") version "9.0.0-beta11"
 }
 group = "fr.maxlego08.superiorskyblock"
-version = "1.0.2"
+version = "1.0.3"
 
 extra.set("targetFolder", file("target/"))
 extra.set("apiFolder", file("target-api/"))
