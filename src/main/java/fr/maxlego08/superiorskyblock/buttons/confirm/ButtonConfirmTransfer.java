@@ -1,11 +1,9 @@
 package fr.maxlego08.superiorskyblock.buttons.confirm;
 
 import com.bgsoftware.superiorskyblock.SuperiorSkyblockPlugin;
-import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
-import com.bgsoftware.superiorskyblock.island.IslandUtils;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
-import com.bgsoftware.superiorskyblock.core.messages.Message;
+import com.bgsoftware.superiorskyblock.island.IslandUtils;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.superiorskyblock.PlayerCache;
@@ -25,15 +23,14 @@ public class ButtonConfirmTransfer extends SuperiorButton {
             Placeholders placeholders) {
         super.onClick(player, event, inventory, slot, placeholders);
         SuperiorPlayer superiorPlayer = getSuperiorPlayer(player);
-        Island island = superiorPlayer.getIsland();
 
         PlayerCache cache = getCache(player);
-        SuperiorPlayer targetPlayer = cache.getTargetPlayer();
+        Island island = cache.getIsland() != null ? cache.getIsland() : superiorPlayer.getIsland();
+        SuperiorPlayer newOwner = cache.getTargetPlayer();
 
-        if (island != null && targetPlayer != null) {
-            island.transferIsland(targetPlayer);
-            Message.TRANSFER_ADMIN.send(superiorPlayer, targetPlayer.getName());
-            Message.TRANSFER_ADMIN_ALREADY_LEADER.send(targetPlayer, superiorPlayer.getName());
+        // Same behavior as SSB's confirm-transfer menu: event, transfer and broadcast are handled by IslandUtils
+        if (island != null && newOwner != null) {
+            IslandUtils.handleTransferIsland(superiorPlayer, island, newOwner);
         }
     }
 }

@@ -24,15 +24,15 @@ public class IslandMemberInfoButton extends SuperiorButton {
     }
 
     @Override
-    public ItemStack getCustomItemStack(Player player) {
+    public ItemStack getCustomItemStack(Player player, boolean useCache, Placeholders placeholders) {
         PlayerCache playerCache = getCache(player);
 
         SuperiorPlayer currentPlayer = playerCache.getTargetPlayer();
-        Placeholders placeholders = new Placeholders();
-        placeholders.register("name", currentPlayer.getName());
-        placeholders.register("role", currentPlayer.getPlayerRole().getDisplayName());
+        Placeholders buttonPlaceholders = placeholders.child();
+        buttonPlaceholders.register("name", currentPlayer.getName());
+        buttonPlaceholders.register("role", currentPlayer.getPlayerRole().getDisplayName());
 
-        ItemStack itemStack = getItemStack().build(player, false, placeholders);
+        ItemStack itemStack = getItemStack().build(player, false, buttonPlaceholders);
         return ItemSkulls.getPlayerHead(itemStack, currentPlayer.getTextureValue());
     }
 }

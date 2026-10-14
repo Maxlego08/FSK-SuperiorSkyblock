@@ -45,8 +45,8 @@ public class UpgradeButton extends SuperiorButton {
     }
 
     @Override
-    public ItemStack getCustomItemStack(Player player) {
+    public ItemStack getCustomItemStack(Player player, boolean useCache, Placeholders placeholders) {
         UpgradeCost levelCost = this.upgradeLevel.getCost();
-        return levelCost.hasEnoughBalance(getSuperiorPlayer(player)) ? super.getCustomItemStack(player) : this.errorItemStack.build(player, false);
+        return levelCost.hasEnoughBalance(getSuperiorPlayer(player)) ? super.getCustomItemStack(player, useCache, placeholders) : this.errorItemStack.build(player, false, placeholders);
     }
 }

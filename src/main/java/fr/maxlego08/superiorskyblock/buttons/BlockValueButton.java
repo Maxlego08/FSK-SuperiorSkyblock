@@ -36,7 +36,7 @@ public class BlockValueButton extends SuperiorButton {
     }
 
     @Override
-    public ItemStack getCustomItemStack(Player player) {
+    public ItemStack getCustomItemStack(Player player, boolean useCache, Placeholders placeholders) {
 
         SuperiorPlayer superiorPlayer = getSuperiorPlayer(player);
         Island island = superiorPlayer.getIsland();
@@ -47,14 +47,14 @@ public class BlockValueButton extends SuperiorButton {
         BigDecimal blockWorth = blockValue.getWorth();
         BigDecimal blockLevel = blockValue.getLevel();
 
-        Placeholders placeholders = new Placeholders();
-        placeholders.register("quantity", String.valueOf(amount));
-        placeholders.register("worth", Formatters.NUMBER_FORMATTER.format(blockWorth.multiply(amount)));
-        placeholders.register("level", Formatters.NUMBER_FORMATTER.format(blockLevel.multiply(amount)));
-        placeholders.register("worth-formatted", Formatters.FANCY_NUMBER_FORMATTER.format(blockWorth.multiply(amount), superiorPlayer.getUserLocale()));
-        placeholders.register("level-formatted", Formatters.FANCY_NUMBER_FORMATTER.format(blockLevel.multiply(amount), superiorPlayer.getUserLocale()));
+        Placeholders buttonPlaceholders = placeholders.child();
+        buttonPlaceholders.register("quantity", String.valueOf(amount));
+        buttonPlaceholders.register("worth", Formatters.NUMBER_FORMATTER.format(blockWorth.multiply(amount)));
+        buttonPlaceholders.register("level", Formatters.NUMBER_FORMATTER.format(blockLevel.multiply(amount)));
+        buttonPlaceholders.register("worth-formatted", Formatters.FANCY_NUMBER_FORMATTER.format(blockWorth.multiply(amount), superiorPlayer.getUserLocale()));
+        buttonPlaceholders.register("level-formatted", Formatters.FANCY_NUMBER_FORMATTER.format(blockLevel.multiply(amount), superiorPlayer.getUserLocale()));
 
-        ItemStack itemStack = getItemStack().build(player, false, placeholders);
+        ItemStack itemStack = getItemStack().build(player, false, buttonPlaceholders);
         itemStack.setAmount(BigInteger.ONE.max(maxStack.min(amount.toBigInteger())).intValue());
         return itemStack;
     }

@@ -27,18 +27,18 @@ public class WarpCategoryManageIconButton extends SuperiorButton {
     }
 
     @Override
-    public ItemStack getCustomItemStack(Player player) {
+    public ItemStack getCustomItemStack(Player player, boolean useCache, Placeholders placeholders) {
         WarpCategory category = getCache(player).getWarpCategory();
 
-        Placeholders placeholders = new Placeholders();
+        Placeholders buttonPlaceholders = placeholders.child();
         if (category != null) {
-            placeholders.register("material", category.getIcon(getSuperiorPlayer(player)) == null ? "STONE"
+            buttonPlaceholders.register("material", category.getIcon(getSuperiorPlayer(player)) == null ? "STONE"
                     : category.getIcon(getSuperiorPlayer(player)).getType().name());
         } else {
-            placeholders.register("material", "STONE");
+            buttonPlaceholders.register("material", "STONE");
         }
 
-        return getItemStack().build(player, false, placeholders);
+        return getItemStack().build(player, false, buttonPlaceholders);
     }
 
     @Override

@@ -53,13 +53,13 @@ public class WarpManagePrivacyButton extends SuperiorButton {
     }
 
     @Override
-    public ItemStack getCustomItemStack(Player player) {
+    public ItemStack getCustomItemStack(Player player, boolean useCache, Placeholders placeholders) {
 
-        var placeholders = new Placeholders();
+        var buttonPlaceholders = placeholders.child();
         var isPrivate = getCache(player).getIslandWarp().hasPrivateFlag();
-        placeholders.register("current-privacy", isPrivate ? this.privateMessage : this.publicMessage);
-        placeholders.register("next-privacy", isPrivate ? this.publicMessage : this.privateMessage);
+        buttonPlaceholders.register("current-privacy", isPrivate ? this.privateMessage : this.publicMessage);
+        buttonPlaceholders.register("next-privacy", isPrivate ? this.publicMessage : this.privateMessage);
 
-        return getItemStack().build(player, false, placeholders);
+        return getItemStack().build(player, false, buttonPlaceholders);
     }
 }

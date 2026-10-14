@@ -13,6 +13,7 @@ import com.bgsoftware.superiorskyblock.api.menu.ISuperiorMenu;
 import com.bgsoftware.superiorskyblock.api.menu.MenuIslandCreationConfig;
 import com.bgsoftware.superiorskyblock.api.missions.MissionCategory;
 import com.bgsoftware.superiorskyblock.api.schematic.Schematic;
+import com.bgsoftware.superiorskyblock.api.world.Dimension;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -64,10 +65,14 @@ public class ZMenusProvider implements MenusProvider {
     }
 
     @Override
-    public void openBiomes(SuperiorPlayer targetPlayer, ISuperiorMenu previousMenu, Island targetIsland) {
+    public void openBiomes(SuperiorPlayer targetPlayer, ISuperiorMenu previousMenu, Island targetIsland, Dimension dimension) {
         Preconditions.checkNotNull(targetPlayer, "targetPlayer parameter cannot be null.");
         Preconditions.checkNotNull(targetIsland, "targetIsland parameter cannot be null.");
-        this.zMenuManager.openInventory(targetPlayer, "biomes", cache -> cache.setIsland(targetIsland));
+        Preconditions.checkNotNull(dimension, "dimension parameter cannot be null.");
+        this.zMenuManager.openInventory(targetPlayer, "biomes", cache -> {
+            cache.setIsland(targetIsland);
+            cache.setDimension(dimension);
+        });
     }
 
     @Override

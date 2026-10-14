@@ -28,18 +28,24 @@ public class ButtonConfirmDisband extends SuperiorButton {
     public void onClick(Player player, InventoryClickEvent event, InventoryEngine inventory, int slot, Placeholders placeholders) {
         super.onClick(player, event, inventory, slot, placeholders);
         SuperiorPlayer superiorPlayer = getSuperiorPlayer(player);
-        Island island = superiorPlayer.getIsland();
+        Island island = getCache(player).getIsland();
+        if (island == null) island = superiorPlayer.getIsland();
+        if (island == null) return;
 
         if (PluginEventsFactory.callIslandDisbandEvent(island, superiorPlayer)) {
             IslandUtils.sendMessage(island, Message.DISBAND_ANNOUNCEMENT, Collections.emptyList(), superiorPlayer.getName());
 
             Message.DISBANDED_ISLAND.send(superiorPlayer);
 
-            /*if (BuiltinModules.BANK.disbandRefund > 0) {
-                Message.DISBAND_ISLAND_BALANCE_REFUND.send(island.getOwner(), Formatters.NUMBER_FORMATTER.format(island.getIslandBank().getBalance().multiply(BigDecimal.valueOf(BuiltinModules.BANK.disbandRefund))));
-            }*/
+            if (BuiltinModules.BANK.getConfiguration().hasDisbandRefund()) {
+                BigDecimal disbandRefund = BuiltinModules.BANK.getConfiguration().getDisbandRefund();
+                Message.DISBAND_ISLAND_BALANCE_REFUND.send(island.getOwner(), Formatters.NUMBER_FORMATTER.format(island.getIslandBank().getBalance().multiply(disbandRefund)));
+            }
 
-            superiorPlayer.setDisbands(superiorPlayer.getDisbands() - 1);
+            // Uniquement si la limite de disband est active
+            if (plugin.getSettings().getDisbandCount() >= 0) {
+                superiorPlayer.setDisbands(superiorPlayer.getDisbands() - 1);
+            }
 
             island.disbandIsland();
         }

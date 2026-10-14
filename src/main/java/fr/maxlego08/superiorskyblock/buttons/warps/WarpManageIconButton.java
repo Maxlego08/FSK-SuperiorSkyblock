@@ -24,13 +24,13 @@ public class WarpManageIconButton extends SuperiorButton {
     }
 
     @Override
-    public ItemStack getCustomItemStack(Player player) {
+    public ItemStack getCustomItemStack(Player player, boolean useCache, Placeholders placeholders) {
         IslandWarp islandWarp = getCache(player).getIslandWarp();
 
-        Placeholders placeholders = new Placeholders();
-        placeholders.register("material", islandWarp.getRawIcon() == null ? "STONE" : islandWarp.getRawIcon().getType().name());
+        Placeholders buttonPlaceholders = placeholders.child();
+        buttonPlaceholders.register("material", islandWarp.getRawIcon() == null ? "STONE" : islandWarp.getRawIcon().getType().name());
 
-        return getItemStack().build(player, false, placeholders);
+        return getItemStack().build(player, false, buttonPlaceholders);
     }
 
     @Override
