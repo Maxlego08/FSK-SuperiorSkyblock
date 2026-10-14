@@ -2,6 +2,9 @@ name: '&8Island Warps'
 
 # When enabled, instead of showing warps, the visitor warp locations will be shown.
 # To show the description, use the %description% placeholder.
+# Available placeholders: %player%, %description%, %warps%, %island-name%, %island-level%, %island-level-formatted%,
+# %island-worth%, %island-worth-formatted%, %island-total-rating%, %island-total-rating-formatted%, %island-rating-amount%
+# The order of the islands is defined by 'global-warps-order' in the SuperiorSkyblock2 config.yml
 visitor-warps: false
 
 items:
@@ -41,4 +44,4 @@ items:
     isPermanent: true
     item:
       material: PAPER
-      name: '&fPrevious Page'
+      name: '&fPrevious Page'

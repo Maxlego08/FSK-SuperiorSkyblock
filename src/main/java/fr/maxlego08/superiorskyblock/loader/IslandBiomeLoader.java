@@ -1,6 +1,7 @@
 package fr.maxlego08.superiorskyblock.loader;
 
 import com.bgsoftware.superiorskyblock.SuperiorSkyblockPlugin;
+import com.bgsoftware.superiorskyblock.api.world.Dimension;
 import com.bgsoftware.superiorskyblock.core.logging.Log;
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.button.DefaultButtonValue;
@@ -10,6 +11,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class IslandBiomeLoader extends SuperiorButtonLoader {
@@ -33,6 +36,28 @@ public class IslandBiomeLoader extends SuperiorButtonLoader {
         } catch (IllegalArgumentException error) {
             Log.warnFromFile("biomes.yml", "Biome '", biomeName, "' is not valid, skipping...");
         }
-        return new IslandBiomeButton(plugin, biome, shouldCurrentBiomeGlow);
+
+        // Dimensions where the biome is available, empty means only the default dimension
+        List<Dimension> dimensions = new ArrayList<>();
+        if (configuration.isString(path + "dimension")) {
+            Dimension dimension = getDimensionSafe(configuration.getString(path + "dimension"));
+            if (dimension != null) dimensions.add(dimension);
+        } else if (configuration.isList(path + "dimensions")) {
+            for (String dimensionName : configuration.getStringList(path + "dimensions")) {
+                Dimension dimension = getDimensionSafe(dimensionName);
+                if (dimension != null) dimensions.add(dimension);
+            }
+        }
+
+        return new IslandBiomeButton(plugin, biome, shouldCurrentBiomeGlow, dimensions);
+    }
+
+    private Dimension getDimensionSafe(String dimensionName) {
+        try {
+            return Dimension.getByName(dimensionName);
+        } catch (Exception error) {
+            Log.warnFromFile("biomes.yml", "Dimension '", dimensionName, "' is not valid, skipping...");
+            return null;
+        }
     }
 }

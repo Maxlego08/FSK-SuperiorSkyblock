@@ -1,0 +1,76 @@
+name: '&8Missions'
+
+# Each SUPERIORSKYBLOCK_MISSION_CATEGORY button opens the category set in 'category'
+# Accepts either the category 'name' or its key under 'categories' (case-insensitive)
+# in plugins/SuperiorSkyblock2/modules/missions/config.yml.
+# Optional: 'hide-without-access: true' hides the button (and shows its 'else' button) when the player
+# cannot open the category (island missions category without an island).
+# If the category does not exist, the 'else' button is displayed instead and a warning listing
+# the available categories is logged once.
+
+matrix:
+  - '$$$$$$$$$'
+  - '$$$$$$$$$'
+  - '$$#@%^&$$'
+  - '$$$$$$$$$'
+  - '$$$$$$$$$'
+
+items:
+  '$':
+    item:
+      material: BLACK_STAINED_GLASS_PANE
+      name: '&f'
+  '#':
+    type: SUPERIORSKYBLOCK_MISSION_CATEGORY
+    category: 'miner'
+    item:
+      material: DIAMOND_PICKAXE
+      name: '&eMiner Missions'
+      lore:
+        - '&7Click to start your adventure as a Miner.'
+      flags:
+        - HIDE_ATTRIBUTES
+    sound: BLOCK_CHEST_OPEN
+    volume: 0.8
+  '@':
+    type: SUPERIORSKYBLOCK_MISSION_CATEGORY
+    category: 'slayer'
+    item:
+      material: ZOMBIE_HEAD
+      name: '&eSlayer Missions'
+      lore:
+        - '&7Click to start your adventure as a Slayer.'
+    sound: BLOCK_CHEST_OPEN
+    volume: 0.8
+  '%':
+    type: SUPERIORSKYBLOCK_MISSION_CATEGORY
+    category: 'farmer'
+    item:
+      material: WHEAT
+      name: '&eFarmer Missions'
+      lore:
+        - '&7Click to start your adventure as a Farmer.'
+    sound: BLOCK_CHEST_OPEN
+    volume: 0.8
+  '^':
+    type: SUPERIORSKYBLOCK_MISSION_CATEGORY
+    category: 'fisherman'
+    item:
+      material: FISHING_ROD
+      name: '&eFisherman Missions'
+      lore:
+        - '&7Click to start your adventure as a Fisherman.'
+      flags:
+        - HIDE_ATTRIBUTES
+    sound: BLOCK_CHEST_OPEN
+    volume: 0.8
+  '&':
+    type: SUPERIORSKYBLOCK_MISSION_CATEGORY
+    category: 'explorer'
+    item:
+      material: MAP
+      name: '&eExplorer Missions'
+      lore:
+        - '&7Click to start your adventure as an Explorer.'
+    sound: BLOCK_CHEST_OPEN
+    volume: 0.8

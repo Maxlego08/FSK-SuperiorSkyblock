@@ -26,6 +26,7 @@ items:
         - '&7'
         - '&6* &ePlace &7#%island-position%'
         - '&6* &eWorth &7$%island-worth%'
+        - '&6* &eBank &7$%island-bank%'
         - '&6* &eRating %island-total-rating% &7(%island-rating-amount%)'
         - '&6* &ePlayers &7%island-players%'
         - '&7'
@@ -65,6 +66,13 @@ items:
     item:
       material: PLAYER_HEAD
       name: '&6Sort by Players'
+  bank:
+    type: SUPERIORSKYBLOCK_TOP_SORT
+    slot: 16
+    sorting-type: 'BANK'
+    item:
+      material: GOLD_BLOCK
+      name: '&6Sort by Bank'
   previous:
     type: PREVIOUS
     slot: 48
@@ -83,4 +91,4 @@ items:
       - 45-53
     item:
       material: BLACK_STAINED_GLASS_PANE
-      name: '&f'
+      name: '&f'

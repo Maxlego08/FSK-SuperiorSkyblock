@@ -1,4 +1,4 @@
-name: '&8Island Members &7%page%/%maxPage%'
+name: '&8Island Members &7(%members%/%max-members%) %page%/%maxPage%'
 size: 45
 
 items:
@@ -31,4 +31,4 @@ items:
       material: BLACK_STAINED_GLASS_PANE
       name: '&f'
     slots:
-      - 36-44
+      - 36-44

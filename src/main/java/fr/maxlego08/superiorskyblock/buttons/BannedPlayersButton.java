@@ -28,6 +28,12 @@ public class BannedPlayersButton extends SuperiorPaginateButton {
     }
 
     @Override
+    public void onInventoryOpen(Player player, InventoryEngine inventory, Placeholders placeholders) {
+        super.onInventoryOpen(player, inventory, placeholders);
+        placeholders.register("banned", String.valueOf(getCache(player).getIsland().getBannedPlayers().size()));
+    }
+
+    @Override
     public boolean hasSpecialRender() {
         return true;
     }

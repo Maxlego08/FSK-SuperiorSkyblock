@@ -92,6 +92,8 @@ public class IslandTopButton extends SuperiorButton {
         placeholders.register("island-total-rating", Formatters.RATING_FORMATTER.format(island.getTotalRating(), inventoryViewer.getUserLocale()));
         placeholders.register("island-rating-amount", Formatters.NUMBER_FORMATTER.format(island.getRatingAmount()));
         placeholders.register("island-players", Formatters.NUMBER_FORMATTER.format(island.getAllPlayersInside().size()));
+        placeholders.register("island-bank", Formatters.NUMBER_FORMATTER.format(island.getIslandBank().getBalance()));
+        placeholders.register("island-bank-formatted", Formatters.FANCY_NUMBER_FORMATTER.format(island.getIslandBank().getBalance(), inventoryViewer.getUserLocale()));
 
         ItemStack itemStack = this.menuItemStackIsland.build(player, false, placeholders);
         ItemMeta itemMeta = itemStack.getItemMeta();

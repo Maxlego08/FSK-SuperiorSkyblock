@@ -3,7 +3,7 @@ plugins {
     id("com.gradleup.shadow") version "9.0.0-beta11"
 }
 group = "fr.maxlego08.superiorskyblock"
-version = "1.0.2"
+version = "1.0.3"
 
 extra.set("targetFolder", file("target/"))
 extra.set("apiFolder", file("target-api/"))
@@ -27,8 +27,8 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("fr.maxlego08.menu:zmenu-api:1.1.0.0")
-    compileOnly(files("libs/SuperiorSkyblock2-2025.1-b555.jar"))
+    compileOnly("fr.maxlego08.menu:zmenu-api:1.1.2.0")
+    compileOnly(files("libs/SuperiorSkyblock2-2026.3.jar"))
 }
 
 tasks.compileJava {

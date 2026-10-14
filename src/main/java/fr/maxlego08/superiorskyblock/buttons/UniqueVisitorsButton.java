@@ -7,6 +7,7 @@ import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import com.bgsoftware.superiorskyblock.core.SequentialListBuilder;
 import com.bgsoftware.superiorskyblock.core.formatting.Formatters;
 import com.bgsoftware.superiorskyblock.core.itemstack.ItemSkulls;
+import com.bgsoftware.superiorskyblock.core.messages.Message;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.api.engine.Pagination;
@@ -15,6 +16,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 public class UniqueVisitorsButton extends SuperiorPaginateButton {
@@ -52,6 +54,12 @@ public class UniqueVisitorsButton extends SuperiorPaginateButton {
         Pagination<UniqueVisitorInfo> pagination = new Pagination<>();
         List<UniqueVisitorInfo> uniqueVisitorInfos = pagination.paginate(requestObjects(player), this.slots.size(), inventory.getPage());
 
+        Locale locale = getSuperiorPlayer(player).getUserLocale();
+        String noneOwner = Message.ISLAND_OWNER_NONE.getMessage(locale);
+        String noneName = Message.ISLAND_NAME_NONE.getMessage(locale);
+        if (noneOwner == null) noneOwner = "None";
+        if (noneName == null) noneName = "None";
+
         for (int i = 0; i != Math.min(uniqueVisitorInfos.size(), this.slots.size()); i++) {
 
             int slot = slots.get(i);
@@ -59,8 +67,8 @@ public class UniqueVisitorsButton extends SuperiorPaginateButton {
 
             SuperiorPlayer visitor = uniqueVisitorInfo.getVisitor();
             Island island = visitor.getIsland();
-            String islandOwner = island != null ? island.getOwner().getName() : "None";
-            String islandName = island != null ? island.getName().isEmpty() ? islandOwner : island.getName() : "None";
+            String islandOwner = island != null ? island.getOwner().getName() : noneOwner;
+            String islandName = island != null ? island.getName().isEmpty() ? islandOwner : island.getName() : noneName;
 
             Placeholders placeholders = new Placeholders();
             placeholders.register("player", visitor.getName());

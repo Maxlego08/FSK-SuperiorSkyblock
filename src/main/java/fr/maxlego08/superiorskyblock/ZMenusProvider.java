@@ -13,7 +13,9 @@ import com.bgsoftware.superiorskyblock.api.menu.ISuperiorMenu;
 import com.bgsoftware.superiorskyblock.api.menu.MenuIslandCreationConfig;
 import com.bgsoftware.superiorskyblock.api.missions.MissionCategory;
 import com.bgsoftware.superiorskyblock.api.schematic.Schematic;
+import com.bgsoftware.superiorskyblock.api.world.Dimension;
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
+import com.bgsoftware.superiorskyblock.core.threads.BukkitExecutor;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import fr.maxlego08.menu.api.Inventory;
@@ -48,6 +50,15 @@ public class ZMenusProvider implements MenusProvider {
     public void initializeMenus() {
         this.originalMenusProvider.initializeMenus();
         this.zMenuManager.registerButtons();
+        loadInventories();
+    }
+
+    /**
+     * Recharge les inventaires zMenu et vide le cache des configurations de création d'île,
+     * sinon les anciens IslandCreationButton resteraient utilisés après un reload.
+     */
+    public void loadInventories() {
+        this.ISLAND_CREATION_CONFIG_CACHE.clear();
         this.zMenuManager.loadInventories();
     }
 
@@ -64,10 +75,14 @@ public class ZMenusProvider implements MenusProvider {
     }
 
     @Override
-    public void openBiomes(SuperiorPlayer targetPlayer, ISuperiorMenu previousMenu, Island targetIsland) {
+    public void openBiomes(SuperiorPlayer targetPlayer, ISuperiorMenu previousMenu, Island targetIsland, Dimension dimension) {
         Preconditions.checkNotNull(targetPlayer, "targetPlayer parameter cannot be null.");
         Preconditions.checkNotNull(targetIsland, "targetIsland parameter cannot be null.");
-        this.zMenuManager.openInventory(targetPlayer, "biomes", cache -> cache.setIsland(targetIsland));
+        Preconditions.checkNotNull(dimension, "dimension parameter cannot be null.");
+        this.zMenuManager.openInventory(targetPlayer, "biomes", cache -> {
+            cache.setIsland(targetIsland);
+            cache.setDimension(dimension);
+        });
     }
 
     @Override
@@ -204,10 +219,13 @@ public class ZMenusProvider implements MenusProvider {
 
     @Override
     public MenuIslandCreationConfig getIslandCreationConfig(Schematic schematic) {
+        Inventory creationMenu = this.zMenuManager.getInventory(MenuType.ISLAND_CREATION);
+        // Inventaire non chargé (désactivé ou en cours de reload) : on ne met pas la config par défaut en cache
+        if (creationMenu == null) return new ZMenuConfig.IslandCreation(schematic, null);
+
         return ISLAND_CREATION_CONFIG_CACHE.computeIfAbsent(schematic, unused -> {
-            Inventory creationMenu = this.zMenuManager.getInventory(MenuType.ISLAND_CREATION);
             for (Button button : creationMenu.getButtons()) {
-                if (button instanceof IslandCreationButton) {
+                if (button instanceof IslandCreationButton && schematic.equals(((IslandCreationButton) button).getSchematic())) {
                     return new ZMenuConfig.IslandCreation((IslandCreationButton) button);
                 }
             }
@@ -284,7 +302,6 @@ public class ZMenusProvider implements MenusProvider {
     public void openMissions(SuperiorPlayer targetPlayer, ISuperiorMenu previousMenu) {
         Preconditions.checkNotNull(targetPlayer, "targetPlayer parameter cannot be null.");
         this.zMenuManager.openInventory(targetPlayer, "missions");
-
     }
 
     @Override
@@ -297,7 +314,10 @@ public class ZMenusProvider implements MenusProvider {
 
     @Override
     public void refreshMissionsCategory(MissionCategory missionCategory) {
-        // TODO
+        Preconditions.checkNotNull(missionCategory, "missionCategory parameter cannot be null.");
+        // SSB appelle cette méthode depuis un thread async lors de la complétion d'une mission
+        BukkitExecutor.ensureMain(() -> refreshInventories(MenuType.MISSIONS_CATEGORY, cache -> cache.getMissionCategory() != null
+                && cache.getMissionCategory().getName().equalsIgnoreCase(missionCategory.getName())));
     }
 
     @Override
@@ -377,7 +397,7 @@ public class ZMenusProvider implements MenusProvider {
     public void openTopIslands(SuperiorPlayer targetPlayer, ISuperiorMenu previousMenu, SortingType sortingType) {
         Preconditions.checkNotNull(targetPlayer, "targetPlayer parameter cannot be null.");
         Preconditions.checkNotNull(sortingType, "sortingType parameter cannot be null.");
-        this.zMenuManager.openInventory(targetPlayer, "top-islands");
+        this.zMenuManager.openInventory(targetPlayer, "top-islands", cache -> cache.setSortingType(sortingType));
     }
 
     @Override

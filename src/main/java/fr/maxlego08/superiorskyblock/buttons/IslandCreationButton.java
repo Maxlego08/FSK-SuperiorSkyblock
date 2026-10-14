@@ -10,12 +10,14 @@ import com.bgsoftware.superiorskyblock.core.messages.Message;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.superiorskyblock.PlayerCache;
+import fr.maxlego08.superiorskyblock.ZMenuConfig;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 public class IslandCreationButton extends SuperiorButton {
     private final Schematic schematic;
@@ -43,7 +45,7 @@ public class IslandCreationButton extends SuperiorButton {
         SuperiorPlayer superiorPlayer = getSuperiorPlayer(player);
 
         if (event.getClick().isRightClick()) {
-            Location previewLocation = plugin.getSettings().getPreviewIslands().get(schematic.getName());
+            Location previewLocation = plugin.getSettings().getIslandPreviews().getLocations().get(schematic.getName().toLowerCase(Locale.ENGLISH));
             if (previewLocation != null) {
                 plugin.getGrid().startIslandPreview(superiorPlayer, schematic.getName(), playerCache.getIslandName());
                 return;
@@ -56,6 +58,7 @@ public class IslandCreationButton extends SuperiorButton {
         Dimension dimension = worlds.getDefaultWorldDimension();
         boolean offset = this.isOffset || worlds.getDimensionConfig(dimension).isSchematicOffset();
 
+        Biome biome = this.biome != null ? this.biome : ZMenuConfig.getDefaultBiome();
         this.plugin.getGrid().createIsland(superiorPlayer, schematic.getName(), bonusWorth, bonusLevel, biome, playerCache.getIslandName(), offset, spawnOffset);
     }
 

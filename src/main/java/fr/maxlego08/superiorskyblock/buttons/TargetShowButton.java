@@ -15,13 +15,13 @@ public class TargetShowButton extends SuperiorButton {
     }
 
     @Override
-    public ItemStack getCustomItemStack(Player player) {
+    public ItemStack getCustomItemStack(Player player, boolean useCache, Placeholders placeholders) {
         PlayerCache playerCache = getCache(player);
         SuperiorPlayer targetPlayer = playerCache.getTargetPlayer();
-        Placeholders placeholders = new Placeholders();
-        placeholders.register("player-name", targetPlayer.getName());
+        Placeholders buttonPlaceholders = placeholders.child();
+        buttonPlaceholders.register("player-name", targetPlayer.getName());
 
-        ItemStack itemStack = this.getItemStack().build(player, false, placeholders);
+        ItemStack itemStack = this.getItemStack().build(player, false, buttonPlaceholders);
         return ItemSkulls.getPlayerHead(itemStack, targetPlayer.getTextureValue());
     }
 }

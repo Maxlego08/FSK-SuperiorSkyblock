@@ -22,9 +22,9 @@ public class BorderColorToggleButton extends SuperiorButton {
     }
 
     @Override
-    public ItemStack getCustomItemStack(Player player) {
+    public ItemStack getCustomItemStack(Player player, boolean useCache, Placeholders placeholders) {
         SuperiorPlayer inventoryViewer = getSuperiorPlayer(player);
-        return (inventoryViewer.hasWorldBorderEnabled() ? this.menuItemStackEnabled : this.menuItemStackDisabled).build(player, false);
+        return (inventoryViewer.hasWorldBorderEnabled() ? this.menuItemStackEnabled : this.menuItemStackDisabled).build(player, false, placeholders);
     }
 
     @Override

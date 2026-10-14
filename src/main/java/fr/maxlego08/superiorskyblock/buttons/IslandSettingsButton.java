@@ -44,7 +44,12 @@ public class IslandSettingsButton extends SuperiorPaginateButton {
             int slot = slots.get(i);
             Setting setting = settings.get(i);
 
-            IslandFlag islandFlag = IslandFlag.getByName(setting.getName());
+            IslandFlag islandFlag;
+            try {
+                islandFlag = IslandFlag.getByName(setting.getName());
+            } catch (NullPointerException error) {
+                continue; // Flag non enregistre (entity-categories.yml modifie), on l'ignore
+            }
             MenuItemStack menuItemStack = island.hasSettingsEnabled(islandFlag) ? setting.getItemStackEnabled() : setting.getItemStackDisabled();
 
             Consumer<InventoryClickEvent> consumer = event -> {

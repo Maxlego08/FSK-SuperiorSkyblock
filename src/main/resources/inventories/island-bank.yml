@@ -68,6 +68,7 @@ items:
       name: '&6Balance'
       lore:
         - '&7Your bank currently has $%superior_island_bank_format%'
+        - '&7Next interest in %superior_island_bank_next_interest%'
   '=':
     item:
       material: EMERALD_BLOCK
@@ -81,4 +82,4 @@ items:
     inventory: 'bank-logs'
     item:
       material: EXPERIENCE_BOTTLE
-      name: '&6Transaction Logs'
+      name: '&6Transaction Logs'
